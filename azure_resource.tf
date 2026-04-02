@@ -93,18 +93,3 @@ resource "aws_route53_record" "secondary" {
   set_identifier = "secondary"
   health_check_id = aws_route53_health_check.azure_health_check.id
 }
-
-resource "aws_route53_record" "secondary_root" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "techsubscribers.com"
-  type    = "CNAME"
-  records = ["mystorageaccount0045.z13.web.core.windows.net"]
-  ttl     = 300
-
-  failover_routing_policy {
-    type = "SECONDARY"
-  }
-
-  set_identifier  = "secondary-root"
-  health_check_id = aws_route53_health_check.azure_health_check.id
-}
