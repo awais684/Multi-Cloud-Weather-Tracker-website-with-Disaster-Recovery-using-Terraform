@@ -71,9 +71,9 @@ resource "azurerm_storage_blob" "assets" {
 }
 
 resource "aws_route53_health_check" "azure_health_check" {
-  type              = "HTTPS"
-  fqdn              = "your-azure-site.web.core.windows.net"
-  port              = 443
+  type              = "HTTP"
+  fqdn              = "mystorageaccount0045.z13.web.core.windows.net"
+  port              = 80
   request_interval  = 30
   failure_threshold = 3
 }
@@ -82,8 +82,9 @@ resource "aws_route53_record" "secondary" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "www.techsubscribers.com"
   type    = "CNAME"
-  records = ["your-azure-site.web.core.windows.net"]
+  records = ["mystorageaccount0045.z13.web.core.windows.net"]
   ttl = 300
+
 
   failover_routing_policy {
     type = "SECONDARY"

@@ -79,7 +79,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 resource "aws_route53_health_check" "aws_health_check" {
   type              = "HTTPS"
-  fqdn              = "dot4nh2q4ve5j.cloudfront.net"
+  fqdn              = "d1c0j68povfl4e.cloudfront.net"
   port              = 443
   request_interval  = 30
   failure_threshold = 3
@@ -94,16 +94,32 @@ import {
   id = "Z07353383V6MGP04V2K9L"
 }
 
+resource "aws_route53_record" "root" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "techsubscribers.com"
+  type    = "A"
+
+  alias {
+    name                   = "d1c0j68povfl4e.cloudfront.net"
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = true
+  }
+
+  failover_routing_policy {
+    type = "PRIMARY"
+  }
+
+  set_identifier  = "primary-root"
+  health_check_id = aws_route53_health_check.aws_health_check.id
+}
+
 resource "aws_route53_record" "primary" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "www.techsubscribers.com"
   type    = "CNAME"
+  records = ["d1c0j68povfl4e.cloudfront.net"]
+  ttl     = 300
 
-  alias {
-    name                   = "dot4nh2q4ve5j.cloudfront.net"  # CloudFront distribution domain name
-    zone_id                = "Z2FDTNDATAQYW2"  # CloudFront's hosted zone ID
-    evaluate_target_health = true
-  }
 
   failover_routing_policy {
     type = "PRIMARY"
